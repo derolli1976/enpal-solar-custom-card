@@ -14,6 +14,8 @@ battery:
 wallbox:
   entity: sensor.enpal_wallbox_state
   name: Wallbox
+  secondary_entity: sensor.enpal_wallbox_power
+  secondary_unit: kW
   tap_action:
     action: more-info
 car_charging:

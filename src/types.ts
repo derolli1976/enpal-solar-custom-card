@@ -11,6 +11,10 @@ export interface TileConfig {
   icon?: string;
   /** Number of decimals to display (default: from entity) */
   decimals?: number;
+  /** Optional secondary entity shown as an additional value line (e.g. wallbox power) */
+  secondary_entity?: string;
+  /** Override unit for the secondary entity */
+  secondary_unit?: string;
   /** Tap action target (defaults to more-info of the entity) */
   tap_action?: ActionConfig;
 }

@@ -64,20 +64,22 @@ Ein vollständiges Beispiel findest du in [`example/dashboard.yaml`](example/das
 | `solar_power`  | Tile         | Solarleistungs-Kachel                                    |
 | `solar_yield`  | Tile         | Solarertrag-Kachel                                       |
 | `battery`      | Tile         | Batteriestatus-Kachel                                    |
-| `wallbox`      | Tile         | Wallbox-Kachel                                           |
+| `wallbox`      | Tile         | Wallbox-Kachel (zeigt Lademodus + optional Leistung)     |
 | `car_charging` | Tile         | „Auto laden"-Kachel mit Toggle (`switch`/`input_boolean`) |
 | `extra_tiles`  | Tile[]       | Beliebig viele zusätzliche Entitäts-Kacheln              |
 
 #### Tile-Objekt
 
-| Feld         | Typ     | Beschreibung                                       |
-| ------------ | ------- | -------------------------------------------------- |
-| `entity`     | string  | Entity-ID                                          |
-| `name`       | string  | Überschrift der Kachel                             |
-| `unit`       | string  | Einheit überschreiben                              |
-| `icon`       | string  | MDI-Icon überschreiben (`mdi:...`)                 |
-| `decimals`   | number  | Nachkommastellen                                   |
-| `tap_action` | Action  | Aktion bei Klick (Standard: `more-info`)           |
+| Feld               | Typ     | Beschreibung                                          |
+| ------------------ | ------- | ----------------------------------------------------- |
+| `entity`           | string  | Entity-ID                                             |
+| `name`             | string  | Überschrift der Kachel                                |
+| `unit`             | string  | Einheit überschreiben                                 |
+| `icon`             | string  | MDI-Icon überschreiben (`mdi:...`)                    |
+| `decimals`         | number  | Nachkommastellen                                      |
+| `secondary_entity` | string  | Zweite Entity (z. B. Wallbox-Leistung) als Wertzeile  |
+| `secondary_unit`   | string  | Einheit der zweiten Entity überschreiben              |
+| `tap_action`       | Action  | Aktion bei Klick (Standard: `more-info`)              |
 
 ## Entwicklung
 

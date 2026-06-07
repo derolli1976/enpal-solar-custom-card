@@ -26,15 +26,25 @@ export class EnpalSolarCard extends LitElement implements LovelaceCard {
   public static getStubConfig(): Partial<EnpalSolarCardConfig> {
     return {
       type: `custom:${CARD_NAME}`,
-      solar_power: { entity: 'sensor.enpal_solar_power', name: 'Solarleistung' },
+      solar_power: {
+        entity: 'sensor.inverter_power_dc_total',
+        name: 'Solarleistung',
+      },
       solar_yield: {
-        entity: 'sensor.enpal_solar_yield_today',
+        entity: 'sensor.inverter_energy_produced_today_dc',
         name: 'Solarertrag heute',
       },
-      battery: { entity: 'sensor.enpal_battery_soc', name: 'Batteriestatus' },
-      wallbox: { entity: 'sensor.enpal_wallbox_state', name: 'Wallbox' },
+      battery: {
+        entity: 'sensor.energy_battery_charge_level',
+        name: 'Batteriestatus',
+      },
+      wallbox: {
+        entity: 'sensor.enpal_webgerat_wallbox_mode_charge_connector_1',
+        name: 'Wallbox',
+        secondary_entity: 'sensor.power_wallbox_connector_1_charging',
+      },
       car_charging: {
-        entity: 'switch.enpal_car_charging',
+        entity: 'switch.wallbox_charging',
         name: 'Auto laden',
       },
     };

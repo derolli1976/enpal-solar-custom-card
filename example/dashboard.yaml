@@ -1,32 +1,22 @@
 type: custom:enpal-solar-card
 solar_power:
-  entity: sensor.enpal_solar_power
+  entity: sensor.inverter_power_dc_total
   name: Solarleistung
-  unit: kW
 solar_yield:
-  entity: sensor.enpal_solar_yield_today
+  entity: sensor.inverter_energy_produced_today_dc
   name: Solarertrag heute
-  unit: kWh
 battery:
-  entity: sensor.enpal_battery_soc
+  entity: sensor.energy_battery_charge_level
   name: Batteriestatus
-  unit: "%"
 wallbox:
-  entity: sensor.enpal_wallbox_state
+  entity: sensor.enpal_webgerat_wallbox_mode_charge_connector_1
   name: Wallbox
-  secondary_entity: sensor.enpal_wallbox_power
-  secondary_unit: kW
+  secondary_entity: sensor.power_wallbox_connector_1_charging
   tap_action:
     action: more-info
 car_charging:
-  entity: switch.enpal_car_charging
+  entity: switch.wallbox_charging
   name: Auto laden
-extra_tiles:
-  - entity: sensor.enpal_grid_power
-    name: Netzbezug
-    unit: kW
-    icon: mdi:transmission-tower
-  - entity: sensor.enpal_house_consumption
-    name: Hausverbrauch
-    unit: kW
-    icon: mdi:home-lightning-bolt
+grid_options:
+  rows: auto
+  columns: 12

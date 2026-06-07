@@ -40,19 +40,21 @@ Minimalbeispiel:
 ```yaml
 type: custom:enpal-solar-card
 solar_power:
-  entity: sensor.enpal_solar_power
+  entity: sensor.inverter_power_dc_total
+  name: Solarleistung
 solar_yield:
-  entity: sensor.enpal_solar_yield_today
+  entity: sensor.inverter_energy_produced_today_dc
+  name: Solarertrag heute
 battery:
-  entity: sensor.enpal_battery_soc
+  entity: sensor.energy_battery_charge_level
+  name: Batteriestatus
 wallbox:
-  entity: sensor.enpal_wallbox_state
+  entity: sensor.enpal_webgerat_wallbox_mode_charge_connector_1
+  name: Wallbox
+  secondary_entity: sensor.power_wallbox_connector_1_charging
 car_charging:
-  entity: switch.enpal_car_charging
-extra_tiles:
-  - entity: sensor.enpal_grid_power
-    name: Netzbezug
-    icon: mdi:transmission-tower
+  entity: switch.wallbox_charging
+  name: Auto laden
 ```
 
 Ein vollständiges Beispiel findest du in [`example/dashboard.yaml`](example/dashboard.yaml).

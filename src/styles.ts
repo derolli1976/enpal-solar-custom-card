@@ -94,6 +94,21 @@ export const styles = css`
     opacity: 0.85;
   }
 
+  .wallbox-mode {
+    color: var(--enpal-label);
+    font-size: 1.3rem;
+    font-weight: 500;
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    text-align: center;
+  }
+
+  .wallbox-mode .unit {
+    font-size: 1rem;
+    opacity: 0.85;
+  }
+
   .tile.charging {
     flex-direction: column;
     gap: 14px;

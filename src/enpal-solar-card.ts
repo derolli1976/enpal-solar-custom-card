@@ -120,6 +120,38 @@ export class EnpalSolarCard extends LitElement implements LovelaceCard {
     const icon = tile.icon ?? ICONS.wallbox;
     const label = tile.name ?? 'Wallbox';
     const actionable = !!tile.entity || !!tile.tap_action;
+
+    const mainState = tile.entity ? this.hass.states[tile.entity] : undefined;
+    const secondaryState = tile.secondary_entity
+      ? this.hass.states[tile.secondary_entity]
+      : undefined;
+
+    let mainTemplate: TemplateResult | typeof nothing = nothing;
+    if (mainState) {
+      const { value, unit } = this.formatState(mainState, tile);
+      mainTemplate = html`
+        <div class="wallbox-mode">
+          <span>${value}</span>${unit
+            ? html`<span class="unit">${unit}</span>`
+            : nothing}
+        </div>
+      `;
+    }
+
+    let secondaryTemplate: TemplateResult | typeof nothing = nothing;
+    if (secondaryState) {
+      const { value, unit } = this.formatState(secondaryState, {
+        unit: tile.secondary_unit,
+      });
+      secondaryTemplate = html`
+        <div class="value">
+          <span>${value}</span>${unit
+            ? html`<span class="unit">${unit}</span>`
+            : nothing}
+        </div>
+      `;
+    }
+
     return html`
       <div
         class="tile wallbox ${actionable ? '' : 'no-action'}"
@@ -127,6 +159,7 @@ export class EnpalSolarCard extends LitElement implements LovelaceCard {
       >
         <ha-icon icon="${icon}"></ha-icon>
         <span class="label">${label}</span>
+        ${mainTemplate} ${secondaryTemplate}
       </div>
     `;
   }
@@ -178,8 +211,15 @@ export class EnpalSolarCard extends LitElement implements LovelaceCard {
       tile?.unit ?? (stateObj.attributes?.unit_of_measurement as string) ?? '';
 
     const num = Number(raw);
-    if (Number.isNaN(num)) {
-      return { value: raw, unit };
+    if (raw === '' || Number.isNaN(num)) {
+      const hass = this.hass as HomeAssistant & {
+        formatEntityState?: (stateObj: unknown) => string;
+      };
+      const display =
+        typeof hass.formatEntityState === 'function'
+          ? hass.formatEntityState(stateObj)
+          : raw;
+      return { value: display, unit: tile?.unit ?? '' };
     }
 
     const decimals =

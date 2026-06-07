@@ -6,7 +6,7 @@ import { EnpalSolarCardConfig, TileConfig } from './types';
 import { EDITOR_NAME } from './const';
 
 interface TileField {
-  key: 'solar_power' | 'solar_yield' | 'battery' | 'wallbox' | 'car_charging';
+  key: 'solar_power' | 'solar_yield' | 'battery' | 'car_charging';
   label: string;
 }
 
@@ -14,7 +14,6 @@ const TILE_FIELDS: TileField[] = [
   { key: 'solar_power', label: 'Solarleistung (kW)' },
   { key: 'solar_yield', label: 'Solarertrag heute (kWh)' },
   { key: 'battery', label: 'Batteriestatus (%)' },
-  { key: 'wallbox', label: 'Wallbox' },
   { key: 'car_charging', label: 'Auto laden (Schalter)' },
 ];
 
@@ -39,6 +38,7 @@ export class EnpalSolarCardEditor
       <div class="editor">
         <h4>Kacheln</h4>
         ${TILE_FIELDS.map((field) => this.renderTileEditor(field))}
+        ${this.renderWallboxEditor()}
 
         <h4>Weitere Entitäten</h4>
         ${(this.config.extra_tiles ?? []).map((tile, index) =>
@@ -47,6 +47,53 @@ export class EnpalSolarCardEditor
         <mwc-button outlined @click=${this.addExtraTile}>
           + Entität hinzufügen
         </mwc-button>
+      </div>
+    `;
+  }
+
+  private renderWallboxEditor(): TemplateResult {
+    const tile = this.config.wallbox ?? {};
+    return html`
+      <div class="tile-block">
+        <div class="tile-title">Wallbox</div>
+        <div class="row two">
+          <ha-entity-picker
+            .hass=${this.hass}
+            .value=${tile.entity ?? ''}
+            label="Zustand / Lademodus"
+            allow-custom-entity
+            @value-changed=${(e: CustomEvent) =>
+              this.wallboxChanged('entity', e.detail.value)}
+          ></ha-entity-picker>
+          <ha-entity-picker
+            .hass=${this.hass}
+            .value=${tile.secondary_entity ?? ''}
+            label="Leistung (optional)"
+            allow-custom-entity
+            @value-changed=${(e: CustomEvent) =>
+              this.wallboxChanged('secondary_entity', e.detail.value)}
+          ></ha-entity-picker>
+        </div>
+        <div class="row two">
+          <ha-textfield
+            label="Beschriftung"
+            .value=${tile.name ?? ''}
+            @input=${(e: Event) =>
+              this.wallboxChanged(
+                'name',
+                (e.target as HTMLInputElement).value,
+              )}
+          ></ha-textfield>
+          <ha-textfield
+            label="Icon (mdi:...)"
+            .value=${tile.icon ?? ''}
+            @input=${(e: Event) =>
+              this.wallboxChanged(
+                'icon',
+                (e.target as HTMLInputElement).value,
+              )}
+          ></ha-textfield>
+        </div>
       </div>
     `;
   }
@@ -149,6 +196,16 @@ export class EnpalSolarCardEditor
       delete (updatedTile as Record<string, unknown>)[prop];
     }
     const newConfig = { ...this.config, [key]: updatedTile };
+    fireEvent(this, 'config-changed', { config: newConfig });
+  }
+
+  private wallboxChanged(prop: keyof TileConfig, value: string): void {
+    const existing = this.config.wallbox ?? {};
+    const updatedTile: TileConfig = { ...existing, [prop]: value };
+    if (value === '' || value === undefined) {
+      delete (updatedTile as Record<string, unknown>)[prop];
+    }
+    const newConfig = { ...this.config, wallbox: updatedTile };
     fireEvent(this, 'config-changed', { config: newConfig });
   }
 

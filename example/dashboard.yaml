@@ -1,0 +1,26 @@
+type: custom:enpal-solar-card
+version: "3.0.0"
+badge_text: "360 aktive\nInstallationen"
+solar_power:
+  entity: sensor.enpal_solar_power
+  name: Solarleistung
+  unit: kW
+solar_yield:
+  entity: sensor.enpal_solar_yield_today
+  name: Solarertrag heute
+  unit: kWh
+battery:
+  entity: sensor.enpal_battery_soc
+  name: Batteriestatus
+  unit: "%"
+wallbox:
+  entity: sensor.enpal_wallbox_state
+  name: Wallbox
+  tap_action:
+    action: more-info
+car_charging:
+  entity: switch.enpal_car_charging
+  name: Auto laden
+home_assistant:
+  action: navigate
+  navigation_path: /config/integrations

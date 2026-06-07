@@ -10,8 +10,6 @@ export const styles = css`
     --enpal-value: #6db6f2;
     --enpal-unit: #6db6f2;
     --enpal-icon: #e8f1fb;
-    --enpal-badge-bg: #f5c542;
-    --enpal-badge-text: #1a2a44;
     --enpal-toggle-on: #34c759;
     --enpal-radius: 18px;
   }
@@ -30,8 +28,7 @@ export const styles = css`
 
   .grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: auto auto;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 18px;
   }
 
@@ -97,27 +94,6 @@ export const styles = css`
     opacity: 0.85;
   }
 
-  /* Wallbox spans the full right column height */
-  .tile.wallbox {
-    grid-column: 3;
-    grid-row: 1 / span 2;
-    min-height: unset;
-  }
-
-  /* Middle column second row holds charging + HA link stacked */
-  .col-stack {
-    grid-column: 2;
-    grid-row: 2;
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-  }
-
-  .col-stack .tile {
-    min-height: 0;
-    flex: 1;
-  }
-
   .tile.charging {
     flex-direction: column;
     gap: 14px;
@@ -132,20 +108,6 @@ export const styles = css`
 
   .charging-row ha-icon {
     --mdc-icon-size: 42px;
-  }
-
-  .tile.ha-link {
-    flex-direction: row;
-    gap: 12px;
-    padding: 14px;
-  }
-
-  .tile.ha-link ha-icon {
-    --mdc-icon-size: 34px;
-  }
-
-  .tile.ha-link .label {
-    font-size: 1.1rem;
   }
 
   /* Toggle switch */
@@ -179,68 +141,9 @@ export const styles = css`
     transform: translateX(30px);
   }
 
-  /* Version / badge tile */
-  .tile.version {
-    grid-column: 3;
-    grid-row: 2;
-    gap: 16px;
-    justify-content: space-evenly;
-  }
-
-  .badge {
-    background: var(--enpal-badge-bg);
-    color: var(--enpal-badge-text);
-    font-weight: 700;
-    font-size: 1.25rem;
-    line-height: 1.15;
-    text-align: center;
-    padding: 12px 22px;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
-  }
-
-  .version-line {
-    display: flex;
-    align-items: baseline;
-    gap: 10px;
-  }
-
-  .version-line .v-label {
-    color: var(--enpal-icon);
-    font-size: 1.3rem;
-  }
-
-  .version-line .v-number {
-    font-size: 2.8rem;
-    font-weight: 700;
-    background: linear-gradient(180deg, #aee0ff 0%, #2f8fe0 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
   .unavailable {
     color: var(--enpal-label);
     font-size: 1.4rem;
     opacity: 0.7;
-  }
-
-  @media (max-width: 600px) {
-    .grid {
-      grid-template-columns: 1fr 1fr;
-      grid-template-rows: auto;
-    }
-    .tile.wallbox {
-      grid-column: 1 / span 2;
-      grid-row: auto;
-    }
-    .col-stack {
-      grid-column: 1 / span 2;
-      grid-row: auto;
-    }
-    .tile.version {
-      grid-column: 1 / span 2;
-      grid-row: auto;
-    }
   }
 `;

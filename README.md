@@ -1,18 +1,17 @@
 # Enpal Solar Card
 
-Eine Home Assistant Lovelace **Custom Card** für die Enpal Solar Integration – im Look des Version-3.0.0-Ankündigungsbilds: Kacheln für Solarleistung, Solarertrag, Batteriestatus, Wallbox, „Auto laden" und ein Versions-/Badge-Feld.
+Eine Home Assistant Lovelace **Custom Card** für die Enpal Solar Integration: Kacheln für Solarleistung, Solarertrag, Batteriestatus, Wallbox, „Auto laden" und beliebig viele weitere Entitäten.
 
 ![Vorschau](docs/preview.png)
 
 ## Funktionen
 
-- Dunkles, abgerundetes Kachel-Design mit blauem Verlaufshintergrund (wie im Ankündigungsbild)
+- Dunkles, abgerundetes Kachel-Design mit blauem Verlaufshintergrund
 - Kacheln: Solarleistung (kW), Solarertrag heute (kWh), Batteriestatus (%), Wallbox, Auto laden (Toggle)
-- Home-Assistant-Link-Kachel mit konfigurierbarer Aktion
-- Gelbes Badge (z. B. „360 aktive Installationen") + große Versionsnummer
+- Beliebig viele zusätzliche Entitäts-Kacheln über `extra_tiles`
 - Visueller Editor im Lovelace-UI (Entities per Picker auswählbar)
 - `tap_action` / `more-info` Unterstützung pro Kachel
-- Responsives Layout (3 Spalten → 2 Spalten auf schmalen Displays)
+- Responsives Layout (Kacheln fließen automatisch um)
 
 ## Installation
 
@@ -40,8 +39,6 @@ Minimalbeispiel:
 
 ```yaml
 type: custom:enpal-solar-card
-version: "3.0.0"
-badge_text: "360 aktive\nInstallationen"
 solar_power:
   entity: sensor.enpal_solar_power
 solar_yield:
@@ -52,22 +49,24 @@ wallbox:
   entity: sensor.enpal_wallbox_state
 car_charging:
   entity: switch.enpal_car_charging
+extra_tiles:
+  - entity: sensor.enpal_grid_power
+    name: Netzbezug
+    icon: mdi:transmission-tower
 ```
 
 Ein vollständiges Beispiel findest du in [`example/dashboard.yaml`](example/dashboard.yaml).
 
 ### Optionen
 
-| Option           | Typ     | Beschreibung                                                |
-| ---------------- | ------- | ----------------------------------------------------------- |
-| `version`        | string  | Versionsnummer rechts unten (Standard: 3.0.0)               |
-| `badge_text`     | string  | Text im gelben Badge, `\n` für Zeilenumbruch                |
-| `solar_power`    | Tile    | Solarleistungs-Kachel                                       |
-| `solar_yield`    | Tile    | Solarertrag-Kachel                                          |
-| `battery`        | Tile    | Batteriestatus-Kachel                                       |
-| `wallbox`        | Tile    | Wallbox-Kachel                                              |
-| `car_charging`   | Tile    | „Auto laden"-Kachel mit Toggle (`switch`/`input_boolean`)   |
-| `home_assistant` | Action  | Aktion der Home-Assistant-Link-Kachel                       |
+| Option         | Typ          | Beschreibung                                              |
+| -------------- | ------------ | -------------------------------------------------------- |
+| `solar_power`  | Tile         | Solarleistungs-Kachel                                    |
+| `solar_yield`  | Tile         | Solarertrag-Kachel                                       |
+| `battery`      | Tile         | Batteriestatus-Kachel                                    |
+| `wallbox`      | Tile         | Wallbox-Kachel                                           |
+| `car_charging` | Tile         | „Auto laden"-Kachel mit Toggle (`switch`/`input_boolean`) |
+| `extra_tiles`  | Tile[]       | Beliebig viele zusätzliche Entitäts-Kacheln              |
 
 #### Tile-Objekt
 

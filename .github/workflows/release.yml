@@ -23,6 +23,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Sync version from release tag
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          echo "Releasing version $VERSION"
+          npm version "$VERSION" --no-git-tag-version --allow-same-version
+          sed -i "s/export const CARD_VERSION = '.*';/export const CARD_VERSION = '$VERSION';/" src/const.ts
+
       - name: Build
         run: npm run build
 

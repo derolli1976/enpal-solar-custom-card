@@ -23,12 +23,8 @@ export interface ActionConfig {
 
 export interface EnpalSolarCardConfig extends LovelaceCardConfig {
   type: string;
-  /** Headline shown in the version/badge tile */
+  /** Optional headline shown at the top of the card */
   title?: string;
-  /** Version string shown in the bottom-right tile, e.g. "3.0.0" */
-  version?: string;
-  /** Text inside the yellow badge */
-  badge_text?: string;
 
   /** Solar power (kW) tile */
   solar_power?: TileConfig;
@@ -42,6 +38,6 @@ export interface EnpalSolarCardConfig extends LovelaceCardConfig {
   /** Car charging toggle tile */
   car_charging?: TileConfig;
 
-  /** Optional Home Assistant link tile target */
-  home_assistant?: ActionConfig;
+  /** Additional free-form entity tiles */
+  extra_tiles?: TileConfig[];
 }

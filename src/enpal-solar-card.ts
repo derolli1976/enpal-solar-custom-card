@@ -26,8 +26,6 @@ export class EnpalSolarCard extends LitElement implements LovelaceCard {
   public static getStubConfig(): Partial<EnpalSolarCardConfig> {
     return {
       type: `custom:${CARD_NAME}`,
-      version: CARD_VERSION,
-      badge_text: '360 aktive\nInstallationen',
       solar_power: { entity: 'sensor.enpal_solar_power', name: 'Solarleistung' },
       solar_yield: {
         entity: 'sensor.enpal_solar_yield_today',
@@ -48,8 +46,6 @@ export class EnpalSolarCard extends LitElement implements LovelaceCard {
     }
     this.config = {
       title: 'Enpal',
-      version: CARD_VERSION,
-      badge_text: '',
       ...config,
     };
   }
@@ -66,26 +62,28 @@ export class EnpalSolarCard extends LitElement implements LovelaceCard {
     return html`
       <ha-card>
         <div class="grid">
-          ${this.renderValueTile('solar_power', ICONS.solarPower)}
-          ${this.renderValueTile('solar_yield', ICONS.solarYield)}
-          ${this.renderWallbox()} ${this.renderValueTile('battery', ICONS.battery)}
-          <div class="col-stack">
-            ${this.renderCharging()} ${this.renderHomeAssistant()}
-          </div>
-          ${this.renderVersion()}
+          ${this.renderValueTile(this.config.solar_power, ICONS.solarPower)}
+          ${this.renderValueTile(this.config.solar_yield, ICONS.solarYield)}
+          ${this.renderValueTile(this.config.battery, ICONS.battery)}
+          ${this.renderWallbox()} ${this.renderCharging()}
+          ${(this.config.extra_tiles ?? []).map((tile) =>
+            this.renderValueTile(tile, ICONS.generic),
+          )}
         </div>
       </ha-card>
     `;
   }
 
   private renderValueTile(
-    key: 'solar_power' | 'solar_yield' | 'battery',
+    tile: TileConfig | undefined,
     defaultIcon: string,
   ): TemplateResult {
-    const tile = this.config[key] as TileConfig | undefined;
-    const stateObj = tile?.entity ? this.hass.states[tile.entity] : undefined;
-    const icon = tile?.icon ?? defaultIcon;
-    const label = tile?.name ?? this.entityName(tile);
+    if (!tile) {
+      return html``;
+    }
+    const stateObj = tile.entity ? this.hass.states[tile.entity] : undefined;
+    const icon = tile.icon ?? defaultIcon;
+    const label = tile.name ?? this.entityName(tile);
 
     let valueTemplate: TemplateResult;
     if (!stateObj) {
@@ -101,10 +99,10 @@ export class EnpalSolarCard extends LitElement implements LovelaceCard {
       `;
     }
 
-    const actionable = !!tile?.entity || !!tile?.tap_action;
+    const actionable = !!tile.entity || !!tile.tap_action;
     return html`
       <div
-        class="tile ${key} ${actionable ? '' : 'no-action'}"
+        class="tile ${actionable ? '' : 'no-action'}"
         @click=${() => this.onTileClick(tile)}
       >
         <ha-icon icon="${icon}"></ha-icon>
@@ -116,9 +114,12 @@ export class EnpalSolarCard extends LitElement implements LovelaceCard {
 
   private renderWallbox(): TemplateResult {
     const tile = this.config.wallbox;
-    const icon = tile?.icon ?? ICONS.wallbox;
-    const label = tile?.name ?? 'Wallbox';
-    const actionable = !!tile?.entity || !!tile?.tap_action;
+    if (!tile) {
+      return html``;
+    }
+    const icon = tile.icon ?? ICONS.wallbox;
+    const label = tile.name ?? 'Wallbox';
+    const actionable = !!tile.entity || !!tile.tap_action;
     return html`
       <div
         class="tile wallbox ${actionable ? '' : 'no-action'}"
@@ -132,9 +133,12 @@ export class EnpalSolarCard extends LitElement implements LovelaceCard {
 
   private renderCharging(): TemplateResult {
     const tile = this.config.car_charging;
-    const icon = tile?.icon ?? ICONS.car;
-    const label = tile?.name ?? 'Auto laden';
-    const stateObj = tile?.entity ? this.hass.states[tile.entity] : undefined;
+    if (!tile) {
+      return html``;
+    }
+    const icon = tile.icon ?? ICONS.car;
+    const label = tile.name ?? 'Auto laden';
+    const stateObj = tile.entity ? this.hass.states[tile.entity] : undefined;
     const isOn = stateObj ? this.isStateOn(stateObj.state) : false;
 
     return html`
@@ -150,37 +154,6 @@ export class EnpalSolarCard extends LitElement implements LovelaceCard {
           >
             <div class="knob"></div>
           </div>
-        </div>
-      </div>
-    `;
-  }
-
-  private renderHomeAssistant(): TemplateResult {
-    const action = this.config.home_assistant;
-    return html`
-      <div
-        class="tile ha-link ${action ? '' : 'no-action'}"
-        @click=${() => this.runAction(action)}
-      >
-        <ha-icon icon="${ICONS.homeAssistant}"></ha-icon>
-        <span class="label">Home Assistant</span>
-      </div>
-    `;
-  }
-
-  private renderVersion(): TemplateResult {
-    const badge = this.config.badge_text;
-    const version = this.config.version ?? CARD_VERSION;
-    return html`
-      <div class="tile version no-action">
-        ${badge
-          ? html`<div class="badge">
-              ${badge.split('\n').map((line) => html`<div>${line}</div>`)}
-            </div>`
-          : nothing}
-        <div class="version-line">
-          <span class="v-label">Version</span>
-          <span class="v-number">${version}</span>
         </div>
       </div>
     `;

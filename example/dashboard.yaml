@@ -1,6 +1,4 @@
 type: custom:enpal-solar-card
-version: "3.0.0"
-badge_text: "360 aktive\nInstallationen"
 solar_power:
   entity: sensor.enpal_solar_power
   name: Solarleistung
@@ -21,6 +19,12 @@ wallbox:
 car_charging:
   entity: switch.enpal_car_charging
   name: Auto laden
-home_assistant:
-  action: navigate
-  navigation_path: /config/integrations
+extra_tiles:
+  - entity: sensor.enpal_grid_power
+    name: Netzbezug
+    unit: kW
+    icon: mdi:transmission-tower
+  - entity: sensor.enpal_house_consumption
+    name: Hausverbrauch
+    unit: kW
+    icon: mdi:home-lightning-bolt

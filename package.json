@@ -1,6 +1,6 @@
 {
   "name": "enpal-solar-custom-card",
-  "version": "3.0.0",
+  "version": "0.1.0",
   "description": "Home Assistant custom Lovelace card for the Enpal solar integration - dashboard tiles for solar power, yield, battery, wallbox and car charging.",
   "type": "module",
   "main": "dist/enpal-solar-card.js",

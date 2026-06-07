@@ -37,26 +37,16 @@ export class EnpalSolarCardEditor
 
     return html`
       <div class="editor">
-        <div class="row">
-          <ha-textfield
-            label="Version"
-            .value=${this.config.version ?? ''}
-            .configValue=${'version'}
-            @input=${this.valueChanged}
-          ></ha-textfield>
-        </div>
-
-        <div class="row">
-          <ha-textfield
-            label="Badge-Text (Zeilenumbruch mit \\n)"
-            .value=${this.config.badge_text ?? ''}
-            .configValue=${'badge_text'}
-            @input=${this.valueChanged}
-          ></ha-textfield>
-        </div>
-
         <h4>Kacheln</h4>
         ${TILE_FIELDS.map((field) => this.renderTileEditor(field))}
+
+        <h4>Weitere Entitäten</h4>
+        ${(this.config.extra_tiles ?? []).map((tile, index) =>
+          this.renderExtraTileEditor(tile, index),
+        )}
+        <mwc-button outlined @click=${this.addExtraTile}>
+          + Entität hinzufügen
+        </mwc-button>
       </div>
     `;
   }
@@ -90,13 +80,62 @@ export class EnpalSolarCardEditor
     `;
   }
 
-  private valueChanged(ev: Event): void {
-    const target = ev.target as HTMLInputElement & { configValue?: string };
-    if (!target.configValue) {
-      return;
-    }
-    const newConfig = { ...this.config, [target.configValue]: target.value };
-    fireEvent(this, 'config-changed', { config: newConfig });
+  private renderExtraTileEditor(
+    tile: TileConfig,
+    index: number,
+  ): TemplateResult {
+    return html`
+      <div class="tile-block">
+        <div class="tile-header">
+          <span class="tile-title">Entität ${index + 1}</span>
+          <mwc-button dense @click=${() => this.removeExtraTile(index)}>
+            Entfernen
+          </mwc-button>
+        </div>
+        <div class="row two">
+          <ha-entity-picker
+            .hass=${this.hass}
+            .value=${tile.entity ?? ''}
+            label="Entity"
+            allow-custom-entity
+            @value-changed=${(e: CustomEvent) =>
+              this.extraTileChanged(index, 'entity', e.detail.value)}
+          ></ha-entity-picker>
+          <ha-textfield
+            label="Beschriftung"
+            .value=${tile.name ?? ''}
+            @input=${(e: Event) =>
+              this.extraTileChanged(
+                index,
+                'name',
+                (e.target as HTMLInputElement).value,
+              )}
+          ></ha-textfield>
+        </div>
+        <div class="row two">
+          <ha-textfield
+            label="Icon (mdi:...)"
+            .value=${tile.icon ?? ''}
+            @input=${(e: Event) =>
+              this.extraTileChanged(
+                index,
+                'icon',
+                (e.target as HTMLInputElement).value,
+              )}
+          ></ha-textfield>
+          <ha-textfield
+            label="Einheit"
+            .value=${tile.unit ?? ''}
+            @input=${(e: Event) =>
+              this.extraTileChanged(
+                index,
+                'unit',
+                (e.target as HTMLInputElement).value,
+              )}
+          ></ha-textfield>
+        </div>
+      </div>
+    `;
   }
 
   private tileChanged(
@@ -111,6 +150,39 @@ export class EnpalSolarCardEditor
     }
     const newConfig = { ...this.config, [key]: updatedTile };
     fireEvent(this, 'config-changed', { config: newConfig });
+  }
+
+  private addExtraTile(): void {
+    const extra = [...(this.config.extra_tiles ?? []), {}];
+    fireEvent(this, 'config-changed', {
+      config: { ...this.config, extra_tiles: extra },
+    });
+  }
+
+  private removeExtraTile(index: number): void {
+    const extra = [...(this.config.extra_tiles ?? [])];
+    extra.splice(index, 1);
+    const newConfig = { ...this.config, extra_tiles: extra };
+    if (extra.length === 0) {
+      delete (newConfig as Record<string, unknown>).extra_tiles;
+    }
+    fireEvent(this, 'config-changed', { config: newConfig });
+  }
+
+  private extraTileChanged(
+    index: number,
+    prop: keyof TileConfig,
+    value: string,
+  ): void {
+    const extra = [...(this.config.extra_tiles ?? [])];
+    const updated: TileConfig = { ...extra[index], [prop]: value };
+    if (value === '' || value === undefined) {
+      delete (updated as Record<string, unknown>)[prop];
+    }
+    extra[index] = updated;
+    fireEvent(this, 'config-changed', {
+      config: { ...this.config, extra_tiles: extra },
+    });
   }
 
   static styles = css`
@@ -138,6 +210,11 @@ export class EnpalSolarCardEditor
       border: 1px solid var(--divider-color, #e0e0e0);
       border-radius: 8px;
       padding: 10px 12px;
+    }
+    .tile-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
     .tile-title {
       font-weight: 600;

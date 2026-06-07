@@ -84,15 +84,12 @@ export class EnpalSolarCardEditor
                 (e.target as HTMLInputElement).value,
               )}
           ></ha-textfield>
-          <ha-textfield
-            label="Icon (mdi:...)"
+          <ha-icon-picker
+            label="Icon"
             .value=${tile.icon ?? ''}
-            @input=${(e: Event) =>
-              this.wallboxChanged(
-                'icon',
-                (e.target as HTMLInputElement).value,
-              )}
-          ></ha-textfield>
+            @value-changed=${(e: CustomEvent) =>
+              this.wallboxChanged('icon', e.detail.value)}
+          ></ha-icon-picker>
         </div>
       </div>
     `;
@@ -160,16 +157,12 @@ export class EnpalSolarCardEditor
           ></ha-textfield>
         </div>
         <div class="row two">
-          <ha-textfield
-            label="Icon (mdi:...)"
+          <ha-icon-picker
+            label="Icon"
             .value=${tile.icon ?? ''}
-            @input=${(e: Event) =>
-              this.extraTileChanged(
-                index,
-                'icon',
-                (e.target as HTMLInputElement).value,
-              )}
-          ></ha-textfield>
+            @value-changed=${(e: CustomEvent) =>
+              this.extraTileChanged(index, 'icon', e.detail.value)}
+          ></ha-icon-picker>
           <ha-textfield
             label="Einheit"
             .value=${tile.unit ?? ''}
@@ -250,15 +243,18 @@ export class EnpalSolarCardEditor
     }
     .row {
       display: flex;
+      flex-wrap: wrap;
       gap: 12px;
     }
-    .row.two ha-entity-picker,
-    .row.two ha-textfield {
-      flex: 1;
+    .row.two > * {
+      flex: 1 1 200px;
+      min-width: 0;
     }
     ha-textfield,
-    ha-entity-picker {
+    ha-entity-picker,
+    ha-icon-picker {
       width: 100%;
+      box-sizing: border-box;
     }
     h4 {
       margin: 8px 0 0;

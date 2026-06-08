@@ -91,6 +91,17 @@ export class EnpalSolarCardEditor
               this.wallboxChanged('icon', e.detail.value)}
           ></ha-icon-picker>
         </div>
+        <div class="row two">
+          <ha-entity-picker
+            .hass=${this.hass}
+            .value=${tile.mode_entity ?? ''}
+            .includeDomains=${['select']}
+            label="Lademodus-Auswahl (optional)"
+            allow-custom-entity
+            @value-changed=${(e: CustomEvent) =>
+              this.wallboxChanged('mode_entity', e.detail.value)}
+          ></ha-entity-picker>
+        </div>
       </div>
     `;
   }

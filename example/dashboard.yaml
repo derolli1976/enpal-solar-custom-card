@@ -12,6 +12,7 @@ wallbox:
   entity: sensor.enpal_webgerat_wallbox_mode_charge_connector_1
   name: Wallbox
   secondary_entity: sensor.power_wallbox_connector_1_charging
+  mode_entity: select.wallbox_mode
   tap_action:
     action: more-info
 car_charging:

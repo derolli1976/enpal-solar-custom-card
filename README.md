@@ -52,6 +52,7 @@ wallbox:
   entity: sensor.enpal_webgerat_wallbox_mode_charge_connector_1
   name: Wallbox
   secondary_entity: sensor.power_wallbox_connector_1_charging
+  mode_entity: select.wallbox_mode
 car_charging:
   entity: switch.wallbox_charging
   name: Auto laden
@@ -66,7 +67,7 @@ Ein vollständiges Beispiel findest du in [`example/dashboard.yaml`](example/das
 | `solar_power`  | Tile         | Solarleistungs-Kachel                                    |
 | `solar_yield`  | Tile         | Solarertrag-Kachel                                       |
 | `battery`      | Tile         | Batteriestatus-Kachel                                    |
-| `wallbox`      | Tile         | Wallbox-Kachel (zeigt Lademodus + optional Leistung)     |
+| `wallbox`      | Tile         | Wallbox-Kachel (zeigt Lademodus + optional Leistung + Lademodus-Dropdown) |
 | `car_charging` | Tile         | „Auto laden"-Kachel mit Toggle (`switch`/`input_boolean`) |
 | `extra_tiles`  | Tile[]       | Beliebig viele zusätzliche Entitäts-Kacheln              |
 
@@ -81,6 +82,7 @@ Ein vollständiges Beispiel findest du in [`example/dashboard.yaml`](example/das
 | `decimals`         | number  | Nachkommastellen                                      |
 | `secondary_entity` | string  | Zweite Entity (z. B. Wallbox-Leistung) als Wertzeile  |
 | `secondary_unit`   | string  | Einheit der zweiten Entity überschreiben              |
+| `mode_entity`      | string  | `select`-Entity für den Lademodus (Dropdown auf der Kachel, z. B. `select.wallbox_mode`) |
 | `tap_action`       | Action  | Aktion bei Klick (Standard: `more-info`)              |
 
 ## Entwicklung

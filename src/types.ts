@@ -15,6 +15,8 @@ export interface TileConfig {
   secondary_entity?: string;
   /** Override unit for the secondary entity */
   secondary_unit?: string;
+  /** Optional select entity to choose the wallbox charge mode (e.g. select.wallbox_mode) */
+  mode_entity?: string;
   /** Tap action target (defaults to more-info of the entity) */
   tap_action?: ActionConfig;
 }

@@ -42,6 +42,7 @@ export class EnpalSolarCard extends LitElement implements LovelaceCard {
         entity: 'sensor.enpal_webgerat_wallbox_mode_charge_connector_1',
         name: 'Wallbox',
         secondary_entity: 'sensor.power_wallbox_connector_1_charging',
+        mode_entity: 'select.wallbox_mode',
       },
       car_charging: {
         entity: 'switch.wallbox_charging',
@@ -162,16 +163,33 @@ export class EnpalSolarCard extends LitElement implements LovelaceCard {
       `;
     }
 
+    const hasMode = !!tile.mode_entity && !!this.hass.states[tile.mode_entity];
+    const clickable = actionable || hasMode;
+
     return html`
       <div
-        class="tile wallbox ${actionable ? '' : 'no-action'}"
-        @click=${() => this.onTileClick(tile)}
+        class="tile wallbox ${clickable ? '' : 'no-action'}"
+        @click=${() => this.onWallboxClick(tile)}
       >
         <ha-icon icon="${icon}"></ha-icon>
         <span class="label">${label}</span>
         ${mainTemplate} ${secondaryTemplate}
       </div>
     `;
+  }
+
+  private onWallboxClick(tile: TileConfig): void {
+    if (tile.tap_action) {
+      this.runAction(tile.tap_action);
+      return;
+    }
+    if (tile.mode_entity && this.hass.states[tile.mode_entity]) {
+      this.fireMoreInfo(tile.mode_entity);
+      return;
+    }
+    if (tile.entity) {
+      this.fireMoreInfo(tile.entity);
+    }
   }
 
   private renderCharging(): TemplateResult {
